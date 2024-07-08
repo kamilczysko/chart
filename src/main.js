@@ -1,8 +1,11 @@
-// import './style.css'
+import './style.css'
 import { createApp } from 'vue'
 import App from './App.vue'
 
 import { createStore } from 'vuex'
+
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
 
 const store = createStore({
   state () {
@@ -91,5 +94,5 @@ const store = createStore({
 })
 
 const app = createApp(App)
-
+app.component('VueDatePicker', VueDatePicker);
 app.use(store).mount('#app')
