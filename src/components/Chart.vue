@@ -10,6 +10,7 @@
 <script>
 import Sector from './Sector.vue';
 export default {
+    components: {Sector},
     computed: {
         sectors() {
             return this.$store.getters.getSectors;

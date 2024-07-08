@@ -54,13 +54,13 @@ const store = createStore({
     }
   },
   getters: {
-    getSectors(state) {
+    getSectors:(state) => {
         return state.sectors;
     },
-    getStationsForSector(state, sectorId) {
+    getStationsForSector:(state) =>  (sectorId) => {
         return state.stations.filter(station => station.sectorId == sectorId)
     },
-    getOperations(state, station, startTimestamp, endTimestamp) {
+    getOperations : (state) => (station, startTimestamp, endTimestamp) => {
         const convertToDisplayable = (data, ratio) => {
             const displayableData = { ...data};
             displayableData.startPosition = ratio * data.startTimestamp;
@@ -76,7 +76,7 @@ const store = createStore({
                     && data.endTimestamp <= endTimestamp)
                 .map(data => convertToDisplayable(data, ratio));
     },
-    getTimestamps(state) {
+    getTimestamps:(state) => {
         return {
             start: state.startTimestamp,
             end: state.endTimestamp

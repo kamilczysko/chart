@@ -7,6 +7,7 @@
 <script>
 import Operation from './Operation.vue';
 export default {
+    components: {Operation},
     props: {
         station: Object
     },

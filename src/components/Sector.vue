@@ -7,6 +7,7 @@
 <script>
 import Station from './Station.vue';
 export default {
+    components: {Station},
     props: {
         name: String,
         id: Number
