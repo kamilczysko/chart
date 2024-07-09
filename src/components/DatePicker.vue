@@ -3,7 +3,8 @@
         <VueDatePicker v-model="this.dateRange" range model-value="range" 
                 model-type="timestamp" dark
                 auto-apply :enable-time-picker="false"
-                @update:model-value="handleDateChange">
+                @update:model-value="handleDateChange"
+                placeholder="Select date range">
             </VueDatePicker>
     </div>
 </template>
@@ -47,10 +48,10 @@ export default {
 }
 </script>
 <style>
-    .dp__input_wrap input {
+    /* .dp__input_wrap input {
         display: none;
     }
     .date_wrapper {
         margin-top: 10px;
-    }
+    } */
 </style>

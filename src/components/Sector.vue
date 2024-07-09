@@ -20,5 +20,8 @@ export default {
 }
 </script>
 <style scoped>
+    .sector {
+        height: 100%;
+    }
     
 </style>
