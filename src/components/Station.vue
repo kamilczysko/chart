@@ -13,8 +13,7 @@ export default {
     },
     computed: {
         operations() {
-            const timeRange = this.$store.getters.getTimestamps;
-            return this.$store.getters.getOperations(this.station.id, timeRange.start, timeRange.end);
+            return this.$store.getters.getOperations(this.station.id);
         }
     }
 }
