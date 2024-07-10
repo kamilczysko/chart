@@ -27,7 +27,7 @@ const store = createStore({
                 name: "weld",
                 startTimestamp: 1720476000000,
                 duration: 3600000,
-                stationId: 2
+                stationId: 1
             },{
                 id: 4,
                 name: "packing",

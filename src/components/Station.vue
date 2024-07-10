@@ -31,8 +31,10 @@ export default {
 <style scoped>
     .station {
         position: relative;
-        min-height: 15px;
+        min-height: 40px;
         display: flex;
+        justify-content: center;
+        align-items: center;
     }
     .station:hover {
         background: palevioletred;

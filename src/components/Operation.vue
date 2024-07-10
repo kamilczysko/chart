@@ -1,8 +1,7 @@
 <template>
-    <div class="operation"  :style="{ width: this.width + 'px', left: this.posX + 'px'}"> 
-        <p class="operation-label"
-        :class="{operation__selected : this.isSelected }"
-        @mousedown="this.onMouseDown">
+    <div class="operation"  :style="{ width: this.width + 'px', left: this.posX + 'px'}" :class="{operation__selected : this.isSelected }"> 
+        <div class="drag" @mousedown="this.onMouseDown"></div>
+        <p class="operation-label">
         {{this.operation.name}}
         </p>
         <div class="resize right" @mousedown="this.onMouseDownRightResize"></div>
@@ -92,9 +91,9 @@ export default {
     .operation {
         display: flex;
         justify-content: center;
-        justify-content: space-around;
+        align-items: center;
         /* height: 20px; */
-        position: relative;
+        position: absolute;
         background: red;
         border-radius: 5px;
     }
@@ -108,17 +107,22 @@ export default {
     }
     .operation-label {
         font-size: xx-small;
-        cursor: pointer;
-        border: 1px solid black;
         overflow: hidden;
+        text-align: center;
+        width: 100%;
+        height: 100%;
     }
-    .operation-label:hover {
-        background: rgb(131, 0, 0);
-    }
-
     .operation__selected {
         border: 2px solid black;
         background: green;
+    }
+    .drag {
+        width: 20px;
+        height: 20px;
+        background-image: url('../assets/drag.svg');
+        background-size: cover;
+        background-position: center;
+        cursor: pointer;
     }
 
 </style>
