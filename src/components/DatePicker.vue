@@ -1,7 +1,7 @@
 <template>
     <div class="date_wrapper">
         <VueDatePicker v-model="this.dateRange" range model-value="range" 
-                model-type="timestamp" dark
+                model-type="timestamp"
                 auto-apply :enable-time-picker="false"
                 @update:model-value="handleDateChange"
                 placeholder="Select date range">

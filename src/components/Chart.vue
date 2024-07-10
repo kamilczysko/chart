@@ -3,7 +3,7 @@
         <div class="dummy" ref="dummy">
             <DatePicker></DatePicker>
         </div>
-        <div class="chart" ref="chart">
+        <div class="chart" ref="chart"  @mousemove="over">
             <header> 
                 <p class="dayIndicator" v-for="stamp in this.generateDailyTimestamps(this.timestamps.start, this.timestamps.end)" :style="{left: ((stamp - this.timestamps.start) * this.pxToTimeRatio) + 'px'}">
                     {{this.formatTimestamp(stamp)}}    
@@ -12,7 +12,7 @@
                     <p>{{ this.timeIndicator }}</p>
                 </div>
             </header>
-            <div @mousemove="over">
+            <div>
                 <Sector  v-for="sector in this.sectors" :key="sector.id" :name="sector.name" :id="sector.id" ></Sector>
             </div>
         </div>
@@ -65,7 +65,6 @@ export default {
         over(event) {
             const rect = event.target.getBoundingClientRect();
             this.mouseX = (event.clientX - rect.left);
-            console.log(this.mouseX)
             this.timeIndicator = this.formatTime((this.mouseX / this.pxToTimeRatio) + this.timestamps.start);
         }
     },
@@ -82,6 +81,9 @@ export default {
     },
     mounted() {
         this.$store.commit("setChartWidth", this.$refs.chart.offsetWidth);
+    },
+    resize() {
+         this.$store.commit("setChartWidth", this.$refs.chart.offsetWidth);
     }
 }
 </script>

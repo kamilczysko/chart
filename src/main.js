@@ -5,7 +5,6 @@ import App from './App.vue'
 import { createStore } from 'vuex'
 
 import VueDatePicker from '@vuepic/vue-datepicker';
-// import '@vuepic/vue-datepicker/dist/main.css'
 
 const store = createStore({
   state () {
@@ -127,10 +126,11 @@ const store = createStore({
         const ratio = (state.endTimestamp - state.startTimestamp) / state.chartWidthInPX;
         operation.startTimestamp = (offset * ratio) + operation.startTimestamp;
     },
-    resizeSelected(state, offset) {
+    resizeSelected(state, data) {
         const operation = state.chartData.filter(data => data.id == state.selectedOperation)[0]
         const ratio = (state.endTimestamp - state.startTimestamp) / state.chartWidthInPX;
-        operation.duration = (offset * ratio) + operation.duration;
+        operation.duration = (data.offset * ratio) + operation.duration;
+        operation.startTimestamp = (data.startPosition * ratio) + state.startTimestamp;
     },
     setTargetStation(state, station) {
         state.targetStation = station;
@@ -138,8 +138,6 @@ const store = createStore({
     changeStation(state) {
         state.chartData.filter(data => data.id == state.selectedOperation)[0].stationId = state.targetStation;        
     }
-
-    
   }
 })
 
