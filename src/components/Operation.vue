@@ -62,9 +62,9 @@ export default {
         background: red;
         border-radius: 5px;
         font-size: small;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        /* display: flex; */
+        /* justify-content: baseline;
+        align-items: baseline; */
         cursor: pointer;
         border: 1px solid black;
     }

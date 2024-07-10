@@ -31,13 +31,14 @@ export default {
 <style scoped>
     .station {
         position: relative;
-        min-height: 30px;
+        min-height: 15px;
+        display: flex;
     }
     .station:hover {
         background: palevioletred;
     }
     .label {
         position: fixed;
-        left: 100px;
+        left: 90px;
     }
 </style>

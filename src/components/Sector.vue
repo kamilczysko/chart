@@ -1,6 +1,6 @@
 <template>
-    <div class="sector" v-on:click="this.visible = !this.visible">
-                <p class="label">{{this.name}}</p>
+    <div class="sector">
+                <p class="label" v-on:click="this.visible = !this.visible">{{this.name}}</p>
                 <div class="station-container">
                     <Station v-for="station in this.stations" :key="station.id" :station="station" v-if="this.visible"></Station>
                 </div>
@@ -29,13 +29,21 @@ export default {
 <style scoped>
     .sector {
         height: 100%;
+        background: pink;
     }
+    /* .sector:hover {
+        background: pink;
+    } */
     .label {
         position: fixed;
-        left: 30px;
+        left: 10px;
+        cursor: pointer;
+    }
+    .label:hover {
+        font-weight: bold;
     }
     .station-container {
-        min-height: 50px;
+        min-height: 10px;
     }
     
 </style>

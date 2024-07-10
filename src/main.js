@@ -104,8 +104,10 @@ const store = createStore({
     },
     isSelected:(state) => (id) => {
         return state.selectedOperation == id;
+    },
+    getPXToTimeRatio(state) {
+        return state.chartWidthInPX / (state.endTimestamp - state.startTimestamp);
     }
-
   },
   mutations: {
     setChartWidth(state, width) {
