@@ -48,10 +48,5 @@ export default {
 }
 </script>
 <style>
-    /* .dp__input_wrap input {
-        display: none;
-    }
-    .date_wrapper {
-        margin-top: 10px;
-    } */
+ 
 </style>

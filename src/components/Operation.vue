@@ -18,9 +18,9 @@ export default {
             draggRightResize: false,
             offsetX: 0,
             posX: 0,
-            resizePosX: 0,
             width: 0,
-            widthBefore:0,
+            resizeBeforePosX: 0,
+            widthBeforeResize:0,
         }
     },
     mounted() {
@@ -40,8 +40,8 @@ export default {
         },
         onMouseDownRightResize(event) {
             this.draggRightResize = true;
-            this.resizePosX = event.clientX;       
-            this.widthBefore = this.width;
+            this.resizeBeforePosX = event.clientX;       
+            this.widthBeforeResize = this.width;
 
             document.addEventListener('mousemove', this.onMouseMoveResize);
             document.addEventListener('mouseup', this.onMouseUpResize);
@@ -55,8 +55,8 @@ export default {
         },
         onMouseMoveResize(event) {
             if (this.draggRightResize) {
-                this.width = this.width + (event.clientX - this.resizePosX);
-                this.resizePosX = event.clientX;
+                this.width = this.width + (event.clientX - this.resizeBeforePosX);
+                this.resizeBeforePosX = event.clientX;
             }
         },
         onMouseUp() {
@@ -73,7 +73,7 @@ export default {
         onMouseUpResize() {
             this.draggRightResize = false;
 
-            const offset = this.width - this.widthBefore;
+            const offset = this.width - this.widthBeforeResize;
             this.$store.commit("resizeSelected", {startPosition: this.posX, offset: offset});
             
             document.removeEventListener('mousemove', this.onMouseMove);
