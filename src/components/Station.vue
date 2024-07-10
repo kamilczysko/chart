@@ -1,6 +1,6 @@
 <template>
     <div class="station" @mouseover="over">
-        <p>station: {{ this.station.name }}</p>
+        <p class="label">{{ this.station.name }}</p>
         <Operation v-for="operation in this.operations" :key="operation.id" :operation="operation"
         @dragEnd="dragEnd"
         ></Operation>
@@ -31,9 +31,13 @@ export default {
 <style scoped>
     .station {
         position: relative;
-        /* height: 20px; */
+        min-height: 30px;
     }
     .station:hover {
         background: palevioletred;
+    }
+    .label {
+        position: fixed;
+        left: 100px;
     }
 </style>
