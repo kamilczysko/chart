@@ -5,6 +5,7 @@
         {{this.operation.name}}
         </p>
         <div class="resize right" @mousedown="this.onMouseDownRightResize"></div>
+        <p style="display: none;">{{ this.startTimestamp }} {{ this.endTimestamp }}</p> <!-- for refreshing don't remove-->
     </div>
 </template>
 <script>
@@ -83,6 +84,28 @@ export default {
     computed: {
         isSelected() {
             return this.$store.getters.isSelected(this.operation.id);
+        },
+        startTimestamp() {
+            return this.$store.state.startTimestamp;
+        },
+        endTimestamp() {
+            return this.$store.state.endTimestamp;
+        },
+        recentOperation() {
+            return this.$store.getters.getOperation(this.operation.id);
+        }
+
+    },
+    watch: {
+        startTimestamp(newVal, oldVal) {
+            const op = this.recentOperation;
+            this.posX = op.startPosition;
+            this.width = op.width;
+        },
+        endTimestamp(newVal, oldVal) {
+            const op = this.recentOperation;
+            this.posX = op.startPosition;
+            this.width = op.width;
         }
     }
 }
@@ -111,6 +134,7 @@ export default {
         text-align: center;
         width: 100%;
         height: 100%;
+        user-select: none;
     }
     .operation__selected {
         border: 2px solid black;

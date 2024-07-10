@@ -95,6 +95,18 @@ const store = createStore({
                 )
                 .map(data => convertToDisplayable(data, ratio));
     },
+    getOperation: (state) =>  (id) => {
+        const ratio = state.chartWidthInPX / (state.endTimestamp - state.startTimestamp);
+        const convertToDisplayable = (data, ratio) => {
+            const displayableData = { ...data};
+            displayableData.startPosition = ratio * (data.startTimestamp - state.startTimestamp);
+            displayableData.width = ratio * data.duration;
+            return displayableData;
+        };
+
+        const d = state.chartData.filter(data => data.id == id)[0];
+        return convertToDisplayable(d, ratio);
+    },
     getTimestamps:(state) => {
         return {
             start: state.startTimestamp,

@@ -1,7 +1,7 @@
 <template>
     <div class="station" @mouseover="over">
         <p class="label">{{ this.station.name }}</p>
-        <Operation v-for="operation in this.operations" :key="operation.id" :operation="operation"
+        <Operation v-for="operation in this.allOperations" :key="operation.id" :operation="operation"
         @dragEnd="dragEnd"
         ></Operation>
     </div>
@@ -13,8 +13,12 @@ export default {
     props: {
         station: Object
     },
+    data() {
+        return {
+        }
+    },
     computed: {
-        operations() {
+        allOperations() {
             return this.$store.getters.getOperations(this.station.id);
         }
     },
