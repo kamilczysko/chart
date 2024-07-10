@@ -149,6 +149,20 @@ const store = createStore({
     },
     changeStation(state) {
         state.chartData.filter(data => data.id == state.selectedOperation)[0].stationId = state.targetStation;        
+    },
+    addNewOperation(state, operation) {
+        const ratio = (state.endTimestamp - state.startTimestamp) / state.chartWidthInPX;
+        const newOperation  = {
+            id: state.chartData.length+1,
+            name: "new op #"+state.chartData.length,
+            startTimestamp: (operation.startPosition * ratio) + state.startTimestamp,
+            duration: 7200000,
+            stationId: operation.stationId
+        };
+        state.chartData.push(newOperation);
+    },
+    deleteOperation(state, id) {
+        state.chartData = state.chartData.filter(data => data.id != id);
     }
   }
 })

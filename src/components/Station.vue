@@ -1,5 +1,5 @@
 <template>
-    <div class="station" @mouseover="over">
+    <div class="station" @mouseover="over" @dblclick="dbclick">
         <p class="label">{{ this.station.name }}</p>
         <Operation v-for="operation in this.allOperations" :key="operation.id" :operation="operation"
         @dragEnd="dragEnd"
@@ -28,6 +28,16 @@ export default {
         },
         over(event) {
             this.$store.commit("setTargetStation", this.station.id);
+        },
+        dbclick(event) {
+            const rect = event.target.getBoundingClientRect();
+            const mouseX = (event.clientX - rect.left);
+            const data = {
+                startPosition: mouseX,
+                stationId: this.station.id
+            }
+            this.$store.commit("addNewOperation", data)
+            
         }
     }
 }
@@ -39,6 +49,7 @@ export default {
         display: flex;
         justify-content: center;
         align-items: center;
+        user-select: none;
     }
     .station:hover {
         background: palevioletred;

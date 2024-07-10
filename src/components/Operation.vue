@@ -1,5 +1,5 @@
 <template>
-    <div class="operation"  :style="{ width: this.width + 'px', left: this.posX + 'px'}" :class="{operation__selected : this.isSelected }"> 
+    <div class="operation" :style="{ width: this.width + 'px', left: this.posX + 'px'}" :class="{operation__selected : this.isSelected }" @click="click"> 
         <div class="drag" @mousedown="this.onMouseDown"></div>
         <p class="operation-label">
         {{this.operation.name}}
@@ -16,11 +16,11 @@ export default {
     data() {
         return {
             dragging: false,
-            draggRightResize: false,
+            draggResize: false,
             offsetX: 0,
             posX: 0,
             width: 0,
-            resizeBeforePosX: 0,
+            posXBeforeResize: 0,
             widthBeforeResize:0,
         }
     },
@@ -29,6 +29,11 @@ export default {
         this.width = this.operation.width;
     },
     methods: {
+        click(event) {
+            if (event.button === 0) {
+                this.remove();
+            }
+        },
         onMouseDown(event) {
             this.dragging = true;
             this.offsetX = event.clientX - this.posX;
@@ -38,26 +43,10 @@ export default {
 
             this.$store.commit("selectOperation", this.operation.id);
             this.$emit("dragStart")
-        },
-        onMouseDownRightResize(event) {
-            this.draggRightResize = true;
-            this.resizeBeforePosX = event.clientX;       
-            this.widthBeforeResize = this.width;
-
-            document.addEventListener('mousemove', this.onMouseMoveResize);
-            document.addEventListener('mouseup', this.onMouseUpResize);
-
-            this.$store.commit("selectOperation", this.operation.id);
-        },
+        },   
         onMouseMove(event) {
             if (this.dragging) {
                 this.posX = event.clientX - this.offsetX;
-            }
-        },
-        onMouseMoveResize(event) {
-            if (this.draggRightResize) {
-                this.width = this.width + (event.clientX - this.resizeBeforePosX);
-                this.resizeBeforePosX = event.clientX;
             }
         },
         onMouseUp() {
@@ -71,14 +60,33 @@ export default {
             document.removeEventListener('mousemove', this.onMouseMove);
             document.removeEventListener('mouseup', this.onMouseUp);
         },
+        onMouseDownRightResize(event) {
+            this.draggResize = true;
+            this.posXBeforeResize = event.clientX;       
+            this.widthBeforeResize = this.width;
+
+            document.addEventListener('mousemove', this.onMouseMoveResize);
+            document.addEventListener('mouseup', this.onMouseUpResize);
+
+            this.$store.commit("selectOperation", this.operation.id);
+        },
+        onMouseMoveResize(event) {
+            if (this.draggResize) {
+                this.width = this.width + (event.clientX - this.posXBeforeResize);
+                this.posXBeforeResize = event.clientX;
+            }
+        },
         onMouseUpResize() {
-            this.draggRightResize = false;
+            this.draggResize = false;
 
             const offset = this.width - this.widthBeforeResize;
             this.$store.commit("resizeSelected", {startPosition: this.posX, offset: offset});
             
             document.removeEventListener('mousemove', this.onMouseMove);
             document.removeEventListener('mouseup', this.onMouseUpResize);
+        },
+        remove() {
+            this.$store.commit("deleteOperation", this.operation.id);
         }
     },
     computed: {
@@ -123,7 +131,7 @@ export default {
     .resize {
         cursor: ew-resize;
         position: absolute;
-        background: green;
+        background: blue;
         height: 100%;
         width: 3px;
         right: 0px;

@@ -30,6 +30,7 @@ export default {
     .sector {
         height: 100%;
         background: pink;
+        user-select: none;
     }
     /* .sector:hover {
         background: pink;
