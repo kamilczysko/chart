@@ -30,9 +30,9 @@ export default {
     },
     methods: {
         click(event) {
-            if (event.button === 0) {
-                this.remove();
-            }
+            // if (event.button === 0) {
+            //     this.remove();
+            // }
         },
         onMouseDown(event) {
             this.dragging = true;

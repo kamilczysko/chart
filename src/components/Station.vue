@@ -1,7 +1,7 @@
 <template>
     <div class="station" @mouseover="over" @dblclick="dbclick">
         <p class="label">{{ this.station.name }}</p>
-        <Operation v-for="operation in this.allOperations" :key="operation.id" :operation="operation"
+        <Operation v-for="(operation, index) in this.allOperations" :key="operation.id" :operation="operation"
         @dragEnd="dragEnd"
         ></Operation>
     </div>
@@ -52,7 +52,7 @@ export default {
         user-select: none;
     }
     .station:hover {
-        background: palevioletred;
+        /* background: palevioletred; */
     }
     .label {
         position: fixed;

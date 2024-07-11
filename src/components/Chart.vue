@@ -97,7 +97,7 @@ export default {
         height: 100%;
     }
     .chart {
-        background: blue;
+        /* background: blue; */
         width: 100%;
         height: 100%;
         display: flex;
@@ -107,6 +107,7 @@ export default {
         width: 100%;
         position: relative;
         height: 50px;
+        background-color: rgb(172, 151, 151);
     }
     .indicator {
         position: absolute;
