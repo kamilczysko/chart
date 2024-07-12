@@ -1,21 +1,12 @@
 <template>
     <main>
         <DatePicker></DatePicker>
-        <div ref="chart" class="chart">
-            <svg @mousemove="over">
-                
-                <g v-for="(sectorToStations, idx) in this.sectorsToStations"  transform="translate(0,50)">
-                    <text x="0" :y="sectorToStations.yPos" :dy="this.defaultHeight / 2" :height="this.defaultHeight" dominant-baseline="middle" font-size=".85em"> {{ sectorToStations.sector.name }} </text>
-                    <g v-for="(station, index) in sectorToStations.stations">
-                        <text  x="70" :y="sectorToStations.yPos + index * this.defaultHeight" :dy="this.defaultHeight / 2" :height="this.defaultHeight" dominant-baseline="middle"  font-size=".85em"> {{ station.name }} </text>
-                        <rect :x="this.labelsWidth" :y="sectorToStations.yPos + index * this.defaultHeight" :height="this.defaultHeight" fill-opacity="0.4" width="100%" fill="white" ></rect>
-                        <line :x1="0" :y1="sectorToStations.yPos + index * this.defaultHeight" x2="100%" :y2="sectorToStations.yPos + index * this.defaultHeight" stroke="#c4c4c4"  stroke-width="1"></line>
-                        <g v-for="operation in this.getOperations(station.id)">
-                            <rect :x="operation.startPosition + this.labelsWidth" :y="sectorToStations.yPos + index * this.defaultHeight" :height="this.defaultHeight" :width="operation.width" rx="5" ry="5" fill="red"></rect>
-                            <text :x="operation.startPosition + this.labelsWidth + 10" :y="sectorToStations.yPos + index * this.defaultHeight" font-size=".6em" :dy="this.defaultHeight / 2" :height="this.defaultHeight" dominant-baseline="middle">{{ operation.name }}</text>
-                        </g>
-                    </g>
-                    <line x1="0" :y1="sectorToStations.yPos" x2="100%" :y2="sectorToStations.yPos" stroke="black" stroke-width="1"></line>
+        <div ref="chart" class="chart" @mousemove="over">
+            <svg>
+                <!-- cursor -->
+                <g> 
+                    <line :x1="this.mouseX" :y1="this.defaultHeight * 2 + 5" :x2="this.mouseX" y2="100%" stroke="black"  stroke-width="1"></line>
+                    <text :x="this.mouseX+ 3" :y="this.defaultHeight * 2 + 10" font-size=".6em" :dy="this.defaultHeight / 2" :height="this.defaultHeight" dominant-baseline="middle">{{ this.timeIndicator }}</text>
                 </g>
                 <g v-for="time in this.generateHourlyTimestamps(this.startTimestamp, this.endTimestamp)">
                     <text :x="(time-this.startTimestamp) / this.ratio + this.labelsWidth + 3" :y="this.defaultHeight * 2" font-size=".8em"> {{this.formatTime(time) }}</text>
@@ -25,6 +16,20 @@
                     <text :x="(time-this.startTimestamp) / this.ratio + this.labelsWidth + 3" :y="this.defaultHeight"> {{this.formatTimestamp(time) }}</text>
                     <line :x1="(time-this.startTimestamp) / this.ratio + this.labelsWidth" y1="0" :x2="(time-this.startTimestamp) / this.ratio + this.labelsWidth" y2="100%" stroke="black"  stroke-width="1"></line>
                 </g>
+                <g v-for="(sectorToStations, idx) in this.sectorsToStations"  transform="translate(0,70)">
+                    <text x="0" :y="sectorToStations.yPos" :dy="this.defaultHeight / 2" :height="this.defaultHeight" dominant-baseline="middle" font-size=".85em"> {{ sectorToStations.sector.name }} </text>
+                    <g v-for="(station, index) in sectorToStations.stations">
+                        <text  x="70" :y="sectorToStations.yPos + index * this.defaultHeight" :dy="this.defaultHeight / 2" :height="this.defaultHeight" dominant-baseline="middle"  font-size=".85em"> {{ station.name }} </text>
+                        <rect :x="this.labelsWidth" :y="sectorToStations.yPos + index * this.defaultHeight" :height="this.defaultHeight" fill-opacity="0.4" width="100%" fill="white" ></rect>
+                        <line :x1="0" :y1="sectorToStations.yPos + index * this.defaultHeight" x2="100%" :y2="sectorToStations.yPos + index * this.defaultHeight" stroke="#c4c4c4"  stroke-width="1"></line>
+                        <g v-for="operation in this.getOperations(station.id)">
+                            <Operation :x="operation.startPosition + this.labelsWidth" :y="sectorToStations.yPos + index * this.defaultHeight" :width="operation.width" :name="operation.name" :id="operation.id"></Operation>
+                        </g>
+                    </g>
+                    <line x1="0" :y1="sectorToStations.yPos" x2="100%" :y2="sectorToStations.yPos" stroke="black" stroke-width="1"></line>
+                </g>
+                
+                
             </svg>
         </div>
         
@@ -32,12 +37,15 @@
 </template>
 <script>
 import DatePicker from './DatePicker.vue';
+import Operation from './Operation.vue';
 export default {
-    components: {DatePicker},
+    components: {DatePicker, Operation},
     data() {
         return {
             globalIdx: 0,
             operations: [],
+            mouseX: 0,
+            timeIndicator: ""
         }
     },
     methods: {
@@ -62,8 +70,7 @@ export default {
             const date = new Date(timestamp);
             const hours = date.getHours().toString().padStart(2, '0');
             const minutes = date.getMinutes().toString().padStart(2, '0');
-            const seconds = date.getSeconds().toString().padStart(2, '0');
-            return `${hours}:${minutes}:${seconds}`;
+            return `${hours}:${minutes}`;
         },
         generateDailyTimestamps(startTimestamp, endTimestamp) {
             const timestamps = [];
@@ -102,9 +109,11 @@ export default {
             return timestamps;
         },
         over(event) {
-            const rect = event.target.getBoundingClientRect();
-            this.mouseX = (event.clientX - rect.left);
-            this.timeIndicator = this.formatTime((this.mouseX / this.pxToTimeRatio) + this.timestamps.start);
+            const rect = this.$refs.chart.getBoundingClientRect();
+            if((event.clientX - rect.left) > this.labelsWidth) {
+                this.mouseX = (event.clientX - rect.left);// - this.labelsWidth;
+                this.timeIndicator = this.formatTime((this.mouseX-this.labelsWidth) * this.ratio + this.startTimestamp);
+            }
         }
     },
     computed: {

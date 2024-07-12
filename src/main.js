@@ -17,35 +17,23 @@ const store = createStore({
                 duration: 7200000,
                 stationId: 1
             },{
-                id: 3,
+                id: 2,
                 name: "weld",
                 startTimestamp: 1720486000000,
                 duration: 3600000,
                 stationId: 1
             },{
-                id: 1,
+                id: 3,
                 name: "drill",
                 startTimestamp: 1720537860000,
                 duration: 7200000,
                 stationId: 4
             },{
-                id: 3,
+                id: 4,
                 name: "weld",
                 startTimestamp: 1720476000000,
                 duration: 3600000,
                 stationId: 4
-            },{
-                id: 2,
-                name: "mill",
-                startTimestamp: 1721404680000,
-                duration: 2600000,
-                stationId: 2
-            },{
-                id: 4,
-                name: "packing",
-                startTimestamp: 1721404700000,
-                duration: 7400000,
-                stationId: 3
             }
         ],
         sectors: [
@@ -135,7 +123,8 @@ const store = createStore({
             defaultHeight: 20,
             nextSectorYPos: 0,
             labelsWidth: 200,
-        }
+        },
+        selectedOperation: null
     }
   },
   getters: {
@@ -174,7 +163,7 @@ const store = createStore({
                 )
                 .map(data => convertToDisplayable(data, ratio));
     },
-    getOperation : (state) => (id) => {
+    getOperation :(state) => (id) => {
         const ratio = state.chartWidthInPX / (state.endTimestamp - state.startTimestamp);
         const convertToDisplayable = (data, ratio) => {
             const displayableData = { ...data};
@@ -182,10 +171,8 @@ const store = createStore({
             displayableData.width = ratio * data.duration;
             return displayableData;
         };
-
-        return state.chartData
-                .filter(data => data.id == id)
-                .map(data => convertToDisplayable(data, ratio));
+        const dataToChange = state.chartData.filter(data => data.id == id)[0];
+        return convertToDisplayable(dataToChange, ratio);
     },
     getTimestamps(state) {
         return {
@@ -201,6 +188,10 @@ const store = createStore({
     },
     getTimeToPXRatio(state) {
         return (state.endTimestamp - state.startTimestamp) / state.chartWidthInPX;
+    },
+    getSelectedOperation(state) {
+        console.log("sdf: "+state.selectedOperation)
+        return state.selectedOperation;
     }
 
     
@@ -215,6 +206,15 @@ const store = createStore({
     setEndTimestamp(state, timestamp) {
         state.endTimestamp = timestamp;
     },
+    addOffsetToOperation(state, data) {
+        const operationToMod = state.chartData.filter(cd => cd.id == data.id)[0];
+        const ratio = (state.endTimestamp - state.startTimestamp) / state.chartWidthInPX;
+        const timeOffset = data.offset * ratio;
+        operationToMod.startTimestamp += Math.floor(timeOffset);
+    },
+    selectOperation(state, id) {
+        state.selectedOperation = id;
+    }
     
   }
 })
