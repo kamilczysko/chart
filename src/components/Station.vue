@@ -1,25 +1,34 @@
 <template>
-    <div class="station" @mouseover="over" @dblclick="dbclick">
-        <p class="label">{{ this.station.name }}</p>
-        <Operation v-for="(operation, index) in this.allOperations" :key="operation.id" :operation="operation"
-        @dragEnd="dragEnd"
-        ></Operation>
-    </div>
+    <g class="station" @mouseover="over" @dblclick="dbclick" :transform="'translate(' + 0 + ',' + this.index * 30 + ')'">
+            <rect x="0" width="100%" :height="this.stationHeight-4" fill="red"></rect>
+            <Operation v-for="operation in this.allOperations" :key="operation.id" :operation="operation" @dragEnd="dragEnd" v-if="currentComponent"></Operation>
+    </g>
 </template>
 <script>
 import Operation from './Operation.vue';
 export default {
     components: {Operation},
     props: {
-        station: Object
+        station: Object,
+        index: Number
     },
     data() {
         return {
+            currentComponent: false,
+            operationsToDraw: []
         }
+    },
+    mounted() {
+        // this.$nextTick(() => {
+            this.currentComponent = true;
+        // });
     },
     computed: {
         allOperations() {
             return this.$store.getters.getOperations(this.station.id);
+        },
+        stationHeight() {
+            return this.$store.getters.getGraphicsParams.operationHeight
         }
     },
     methods: {
@@ -36,8 +45,7 @@ export default {
                 startPosition: mouseX,
                 stationId: this.station.id
             }
-            this.$store.commit("addNewOperation", data)
-            
+            this.$store.commit("addNewOperation", data);
         }
     }
 }
@@ -57,5 +65,9 @@ export default {
     .label {
         position: fixed;
         left: 90px;
+    }
+    g {
+        width: 100%;
+        height: 100%;
     }
 </style>

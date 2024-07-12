@@ -1,12 +1,5 @@
 <template>
-    <div class="operation" :style="{ width: this.width + 'px', left: this.posX + 'px'}" :class="{operation__selected : this.isSelected }" @click="click"> 
-        <div class="drag" @mousedown="this.onMouseDown"></div>
-        <p class="operation-label">
-        {{this.operation.name}}
-        </p>
-        <div class="resize right" @mousedown="this.onMouseDownRightResize"></div>
-        <p style="display: none;">{{ this.startTimestamp }} {{ this.endTimestamp }}</p> <!-- for refreshing don't remove-->
-    </div>
+    <rect :x="this.posX" :width="this.width" :height="this.stationHeight" fill="green" rx="5" ry="5"/>
 </template>
 <script>
 export default {
@@ -27,6 +20,7 @@ export default {
     mounted() {
         this.posX = this.operation.startPosition;
         this.width = this.operation.width;
+        console.log("posX: "+this.posX)
     },
     methods: {
         click(event) {
@@ -101,6 +95,9 @@ export default {
         },
         recentOperation() {
             return this.$store.getters.getOperation(this.operation.id);
+        },
+        stationHeight() {
+            return this.$store.getters.getGraphicsParams.operationHeight
         }
 
     },

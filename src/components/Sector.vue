@@ -1,13 +1,5 @@
 <template>
-    <div class="sector">
-                <div class="label">
-                    <p  v-on:click="this.visible = !this.visible">{{this.name}}</p>
-                    <img src="../assets/triangle.png" alt="" :class="{closed:!this.visible}">
-                </div>
-                <div class="station-container">
-                    <Station v-for="(station, index) in this.stations" :key="station.id" :station="station" v-if="this.visible"  :class="{highlight:index%2==1}"></Station>
-                </div>
-            </div>
+        <Station v-for="(station, index) in this.stations" :key="station.id" :station="station" v-if="this.visible" :index="index"></Station>
 </template>
 <script>
 import Station from './Station.vue';
@@ -15,7 +7,10 @@ export default {
     components: {Station},
     props: {
         name: String,
-        id: Number
+        id: Number,
+    },
+    mounted() {
+        
     },
     data() {
         return {
@@ -63,6 +58,11 @@ export default {
     }
     .highlight {
         background: rgb(228, 228, 228);
+    }
+    g {
+        width: 100%;
+        height: 100%;
+        fill: orange;
     }
     
 </style>

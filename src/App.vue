@@ -3,8 +3,14 @@
 </script>
 
 <template>
-    <Chart></Chart>
+    <main>
+        <Chart></Chart>
+    </main>
 </template>
 
 <style scoped>
+    main {
+        height: 100vh;
+        overflow: scroll;   
+    }
 </style>

@@ -17,21 +17,33 @@ const store = createStore({
                 duration: 7200000,
                 stationId: 1
             },{
-                id: 2,
-                name: "mill",
-                startTimestamp: 1721404680000,
-                duration: 2600000,
-                stationId: 1
-            },{
                 id: 3,
                 name: "weld",
                 startTimestamp: 1720476000000,
                 duration: 3600000,
                 stationId: 1
             },{
+                id: 1,
+                name: "drill",
+                startTimestamp: 1720537860000,
+                duration: 7200000,
+                stationId: 4
+            },{
+                id: 3,
+                name: "weld",
+                startTimestamp: 1720476000000,
+                duration: 3600000,
+                stationId: 4
+            },{
+                id: 2,
+                name: "mill",
+                startTimestamp: 1721404680000,
+                duration: 2600000,
+                stationId: 2
+            },{
                 id: 4,
                 name: "packing",
-                startTimestamp: 1720537860000,
+                startTimestamp: 1721404700000,
                 duration: 7400000,
                 stationId: 3
             }
@@ -59,6 +71,12 @@ const store = createStore({
                 sectorId: 1
             },
             {
+                id: 4,
+                name: "qa",
+                responsible: "pczemek",
+                sectorId: 1
+            },
+            {
                 id: 3,
                 name: "packing station",
                 responsible: "Janusz",
@@ -70,6 +88,9 @@ const store = createStore({
         chartWidthInPX: 0,
         selectedOperation: null,
         targetStation: null,
+        graphicsParams: {
+            operationHeight: 20
+        }
     }
   },
   getters: {
@@ -77,10 +98,12 @@ const store = createStore({
         return state.sectors;
     },
     getStationsForSector:(state) =>  (sectorId) => {
+        console.log(sectorId)
         return state.stations.filter(station => station.sectorId == sectorId)
     },
     getOperations : (state) => (station) => {
         const ratio = state.chartWidthInPX / (state.endTimestamp - state.startTimestamp);
+        console.log(state.chartWidthInPX)
         const convertToDisplayable = (data, ratio) => {
             const displayableData = { ...data};
             displayableData.startPosition = ratio * (data.startTimestamp - state.startTimestamp);
@@ -118,6 +141,9 @@ const store = createStore({
     },
     getPXToTimeRatio(state) {
         return state.chartWidthInPX / (state.endTimestamp - state.startTimestamp);
+    },
+    getGraphicsParams(state) {
+        return state.graphicsParams;
     }
   },
   mutations: {

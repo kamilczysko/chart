@@ -1,21 +1,12 @@
 <template>
     <main>
-        <div class="dummy" ref="dummy">
-            <DatePicker></DatePicker>
+        <DatePicker></DatePicker>
+        <div ref="chart" class="chart">
+            <svg>
+                <Sector v-for="sector in this.sectors" :key="sector.id" :name="sector.name" :id="sector.id"></Sector>
+            </svg>
         </div>
-        <div class="chart" ref="chart"  @mousemove="over">
-            <header> 
-                <p class="dayIndicator" v-for="stamp in this.generateDailyTimestamps(this.timestamps.start, this.timestamps.end)" :style="{left: ((stamp - this.timestamps.start) * this.pxToTimeRatio) + 'px'}">
-                    {{this.formatTimestamp(stamp)}}    
-                </p>
-                <div class="indicator" :style="{left: this.mouseX+'px'}">
-                    <p>{{ this.timeIndicator }}</p>
-                </div>
-            </header>
-            <div>
-                <Sector  v-for="sector in this.sectors" :key="sector.id" :name="sector.name" :id="sector.id" ></Sector>
-            </div>
-        </div>
+        
     </main>
 </template>
 <script>
@@ -66,6 +57,13 @@ export default {
             const rect = event.target.getBoundingClientRect();
             this.mouseX = (event.clientX - rect.left);
             this.timeIndicator = this.formatTime((this.mouseX / this.pxToTimeRatio) + this.timestamps.start);
+        },
+        updateSvgSize() {
+            // Logika do obliczania i aktualizowania rozmiarów SVG na podstawie zawartości
+            const svgElement = this.$el.querySelector('svg');
+            const bbox = svgElement.getBBox();
+            svgElement.setAttribute('width', bbox.width + 20); // Dostosuj z marginesem
+            svgElement.setAttribute('height', bbox.height + 20); // Dostosuj z marginesem
         }
     },
     computed: {
@@ -81,16 +79,26 @@ export default {
     },
     mounted() {
         this.$store.commit("setChartWidth", this.$refs.chart.offsetWidth);
+        this.updateSvgSize();
+        window.addEventListener('resize', this.updateSvgSize);
     },
     resize() {
          this.$store.commit("setChartWidth", this.$refs.chart.offsetWidth);
+        window.removeEventListener('resize', this.updateSvgSize);
     }
 }
 </script>
 <style scoped>
+    svg {
+        width: 100%;
+        height: 100%;
+        background: blue;
+        display: block;
+    }
     main {
-        display: grid;
-        grid-template-columns: 1fr 5fr;
+        height: 100%;
+        /* display: grid; */
+        /* grid-template-columns: 1fr 5fr; */
     }
     .dummy {
         width: 100%;
@@ -100,8 +108,6 @@ export default {
         /* background: blue; */
         width: 100%;
         height: 100%;
-        display: flex;
-        flex-direction: column;
     }
     header {
         width: 100%;
