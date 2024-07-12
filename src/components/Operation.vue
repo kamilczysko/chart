@@ -1,6 +1,11 @@
 <template>
-    <g @mousedown="dragStart" @mousemove="move" @mouseup="dragStop" @mouseleave=dragStop>
-        <rect class="operation" :class="{selected: this.selectedOperation==this.id}" :x="this.posX" :y="this.y" :height="this.defaultHeight" :width="this.width" rx="5" ry="5"></rect>
+    <g>
+        <rect class="operation"
+        @mousedown="dragStart" @mousemove="move" @mouseup="dragStop" @mouseleave=dragStop
+        :class="{selected: this.selectedOperation==this.id}" :x="this.posX" :y="this.y" :height="this.defaultHeight" :width="this.wdth" rx="5" ry="5"></rect>
+        <rect 
+        @mousedown="resizeStart" @mousemove="resize" @mouseup="resizeStop" @mouseleave=resizeStop
+        :x="this.posX+this.wdth" :y="this.y" fill="red" :height="this.defaultHeight" :width="4" class="resize"></rect>
         <!-- <text :x="this.x + 10" :y="this.y" font-size=".6em" :dy="this.defaultHeight / 2" :height="this.defaultHeight" dominant-baseline="middle">{{ this.name }}</text> -->
     </g>
 </template>
@@ -17,8 +22,14 @@ export default {
         return {
             dragging: false,
             dragStartX: 0,
+            
+            wdth: 0,
             posX: 0,
-            offsetX:0
+            offsetX:0,
+
+            resizing: false,
+            posXResize: 0,
+            offsetXResize: 0
 
         }
     },
@@ -38,50 +49,37 @@ export default {
     },
     mounted() {
         this.posX = this.x;
+        this.wdth = this.width;
     },
     methods: {
-    
-        onMouseMove(event) {
-            if (this.dragging) {
-                this.posX = event.clientX - this.offsetX;
+        resizeStart(event) {
+            this.resizing = true;
+            this.offsetXResize = event.clientX;// - this.posX;
+            
+            document.addEventListener('mousemove', this.resize);
+            document.addEventListener('mouseup', this.stopResize);
+
+            this.$store.commit("selectOperation", this.id);
+        },
+        resize(event) {
+            if(this.resizing){
+                this.posXResize = event.clientX - this.offsetXResize;
+                this.wdth += this.posXResize;
+                this.offsetXResize = event.clientX;
             }
         },
-        onMouseUp() {
-            this.dragging = false;
+        stopResize(event) {
+            if(this.resizing){
+                this.resizing = false;
+                const offset = this.wdth - this.operation.width;
 
-            const offset = this.posX - this.operation.startPosition;
-            this.$store.commit("moveSelected", offset);
-
-            this.$emit("dragEnd")
-
-            document.removeEventListener('mousemove', this.onMouseMove);
-            document.removeEventListener('mouseup', this.onMouseUp);
+                this.$store.commit('setWidthToOperation', {id: this.id, offset: offset});
+                this.wdth = this.operation.width;
+                
+                document.removeEventListener('mousemove', this.move);
+                document.removeEventListener('mouseup', this.drag);
+            }
         },
-        // onMouseDownRightResize(event) {
-        //     this.draggResize = true;
-        //     this.posXBeforeResize = event.clientX;       
-        //     this.widthBeforeResize = this.width;
-
-        //     document.addEventListener('mousemove', this.onMouseMoveResize);
-        //     document.addEventListener('mouseup', this.onMouseUpResize);
-
-        //     this.$store.commit("selectOperation", this.operation.id);
-        // },
-        // onMouseMoveResize(event) {
-        //     if (this.draggResize) {
-        //         this.width = this.width + (event.clientX - this.posXBeforeResize);
-        //         this.posXBeforeResize = event.clientX;
-        //     }
-        // },
-        // onMouseUpResize() {
-        //     this.draggResize = false;
-
-        //     const offset = this.width - this.widthBeforeResize;
-        //     this.$store.commit("resizeSelected", {startPosition: this.posX, offset: offset});
-            
-        //     document.removeEventListener('mousemove', this.onMouseMove);
-        //     document.removeEventListener('mouseup', this.onMouseUpResize);
-        // },
         dragStart(event) {
             this.dragging = true;
             this.offsetX = event.clientX - this.posX;
@@ -115,7 +113,7 @@ export default {
 </script>
 <style scoped>
     .operation {
-        cursor: pointer;
+        cursor: grab;
         
     }
     .operation:hover {
@@ -123,5 +121,11 @@ export default {
     }
     .selected {
         fill: pink !important;
+    }
+    .resize {
+        cursor: ew-resize ; 
+    }
+    .resize:hover {
+        fill: green;
     }
 </style>

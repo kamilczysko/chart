@@ -190,7 +190,6 @@ const store = createStore({
         return (state.endTimestamp - state.startTimestamp) / state.chartWidthInPX;
     },
     getSelectedOperation(state) {
-        console.log("sdf: "+state.selectedOperation)
         return state.selectedOperation;
     }
 
@@ -211,6 +210,12 @@ const store = createStore({
         const ratio = (state.endTimestamp - state.startTimestamp) / state.chartWidthInPX;
         const timeOffset = data.offset * ratio;
         operationToMod.startTimestamp += Math.floor(timeOffset);
+    },
+    setWidthToOperation(state, data) {
+        const operationToMod = state.chartData.filter(cd => cd.id == data.id)[0];
+        const ratio = (state.endTimestamp - state.startTimestamp) / state.chartWidthInPX;
+        const timeOffset = data.offset * ratio;
+        operationToMod.duration += Math.floor(timeOffset);
     },
     selectOperation(state, id) {
         state.selectedOperation = id;
