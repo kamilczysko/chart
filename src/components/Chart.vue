@@ -7,10 +7,9 @@
                     <text x="0" :y="sectorToStations.yPos" :dy="this.defaultHeight / 2" :height="this.defaultHeight" dominant-baseline="middle"> {{ sectorToStations.sector.name }} </text>
                     <g v-for="(station, index) in sectorToStations.stations">
                         <text  x="70" :y="sectorToStations.yPos + index * this.defaultHeight" :dy="this.defaultHeight / 2" :height="this.defaultHeight" dominant-baseline="middle"> {{ station.name }} </text>
-                        <rect :x="this.labelsWidth" :y="sectorToStations.yPos + index * this.defaultHeight" :height="this.defaultHeight" fill-opacity="0.4" width="100%" fill="white" :class="{highlight: (this.getGlobalIndex()%2==0)}"></rect>
+                        <rect :x="this.labelsWidth" :y="sectorToStations.yPos + index * this.defaultHeight" :height="this.defaultHeight" fill-opacity="0.4" width="100%" fill="white" ></rect>
                         <g v-for="operation in this.allOperations.filter(op => op.stationId==station.id)">
-
-                            <rect  :x="operation.startPosition + this.labelsWidth" y="0" height="20" width="100" fill="red"></rect>
+                            <rect  :x="operation.startPosition + this.labelsWidth" :y="sectorToStations.yPos + index * this.defaultHeight" :height="this.defaultHeight" :width="operation.width" rx="5" ry="5" fill="red"></rect>
                         </g>
                     </g>
 
@@ -18,15 +17,13 @@
                 </g>
             </svg>
         </div>
-        <p style="display: none;">{{ this.startTimestamp }} {{ this.endTimestamp }}</p>
         
     </main>
 </template>
 <script>
-import Station from './Station.vue';
 import DatePicker from './DatePicker.vue';
 export default {
-    components: {Station, DatePicker},
+    components: {DatePicker},
     data() {
         return {
             globalIdx: 0,
@@ -67,7 +64,7 @@ export default {
     watch: {
         startTimestamp(oldVal, newVal) {
             this.operations = this.$store.getters.getOperations;
-            console.log("dddd")
+            console.log("asdff")
         },
         endTimestamp(oldVal, newVal) {
             console.log("dddd")

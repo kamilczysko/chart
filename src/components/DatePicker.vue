@@ -38,7 +38,7 @@ export default {
     },
     computed: {
         timestamps() {
-            return this.$store.getters.getTimestamps
+            return this.$store.getters.getTimestamps;
         }
     },
     mounted() {

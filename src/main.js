@@ -19,7 +19,7 @@ const store = createStore({
             },{
                 id: 3,
                 name: "weld",
-                startTimestamp: 1720476000000,
+                startTimestamp: 1720486000000,
                 duration: 3600000,
                 stationId: 1
             },{
@@ -204,7 +204,7 @@ const store = createStore({
   },
   mutations: {
     setChartWidth(state, width) {
-        state.chartWidthInPX = width;
+        state.chartWidthInPX = width-state.graphicsParams.labelsWidth;
     },
     setStartTimestamp(state, timestamp) {
         state.startTimestamp = timestamp;
