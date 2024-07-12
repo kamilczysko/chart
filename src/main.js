@@ -55,6 +55,13 @@ const store = createStore({
             },{
                 id: 2,
                 name: "hala B"
+            },
+            {
+                id: 3,
+                name: "hala C"
+            },{
+                id: 4,
+                name: "hala D"
             }
         ], 
         stations: [
@@ -81,6 +88,42 @@ const store = createStore({
                 name: "packing station",
                 responsible: "Janusz",
                 sectorId: 2
+            },
+            {
+                id: 5,
+                name: "qa sation 2",
+                responsible: "Janusz",
+                sectorId: 2
+            },
+            {
+                id: 11,
+                name: "drilling station",
+                responsible: "Adam",
+                sectorId: 3
+            },
+            {
+                id: 22,
+                name: "welding station",
+                responsible: "Adam",
+                sectorId: 3
+            },
+            {
+                id: 44,
+                name: "qa",
+                responsible: "pczemek",
+                sectorId: 3
+            },
+            {
+                id: 33,
+                name: "packing station",
+                responsible: "Janusz",
+                sectorId: 3
+            },
+            {
+                id: 55,
+                name: "qa sation 2",
+                responsible: "Janusz",
+                sectorId: 3
             }
         ],
         startTimestamp: new Date().getTime(),
@@ -89,7 +132,9 @@ const store = createStore({
         selectedOperation: null,
         targetStation: null,
         graphicsParams: {
-            operationHeight: 20
+            operationHeight: 20,
+            nextSectorYPos: 0,
+
         }
     }
   },
@@ -98,12 +143,26 @@ const store = createStore({
         return state.sectors;
     },
     getStationsForSector:(state) =>  (sectorId) => {
-        console.log(sectorId)
         return state.stations.filter(station => station.sectorId == sectorId)
+    },
+    getSectorToStations(state) {
+        let yPos = 0;
+        return state.sectors.map(sector => 
+            {
+                const stations = state.stations.filter(station => station.sectorId == sector.id);
+                const stationData = {
+                    sector: sector,
+                    yPos: yPos,
+                    stations: stations
+                } ;
+                console.log(yPos)
+                yPos += stations.length * state.graphicsParams.operationHeight; //10 - offset
+                return stationData;
+            }
+        )
     },
     getOperations : (state) => (station) => {
         const ratio = state.chartWidthInPX / (state.endTimestamp - state.startTimestamp);
-        console.log(state.chartWidthInPX)
         const convertToDisplayable = (data, ratio) => {
             const displayableData = { ...data};
             displayableData.startPosition = ratio * (data.startTimestamp - state.startTimestamp);
@@ -144,6 +203,9 @@ const store = createStore({
     },
     getGraphicsParams(state) {
         return state.graphicsParams;
+    },
+    getNextSectorYPos(state) {
+        return state.getGraphicsParams.nextSectorYPos;
     }
   },
   mutations: {

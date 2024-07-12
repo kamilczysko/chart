@@ -1,7 +1,6 @@
 <template>
-    <g class="station" @mouseover="over" @dblclick="dbclick" :transform="'translate(' + 0 + ',' + this.index * 30 + ')'">
-            <rect x="0" width="100%" :height="this.stationHeight-4" fill="red"></rect>
-            <Operation v-for="operation in this.allOperations" :key="operation.id" :operation="operation" @dragEnd="dragEnd" v-if="currentComponent"></Operation>
+    <g class="station" @mouseover="over" @dblclick="dbclick">
+            <Operation v-for="operation in this.allOperations" :key="operation.id" :operation="operation" @dragEnd="dragEnd"></Operation>
     </g>
 </template>
 <script>
@@ -14,14 +13,11 @@ export default {
     },
     data() {
         return {
-            currentComponent: false,
             operationsToDraw: []
         }
     },
     mounted() {
-        // this.$nextTick(() => {
-            this.currentComponent = true;
-        // });
+        
     },
     computed: {
         allOperations() {
