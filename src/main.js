@@ -21,7 +21,7 @@ const store = createStore({
                 name: "weld",
                 startTimestamp: 1720486000000,
                 duration: 3600000,
-                stationId: 1
+                stationId: 2
             },{
                 id: 3,
                 name: "drill",
@@ -149,19 +149,10 @@ const store = createStore({
         return state.graphicsParams.labelsWidth;
     },
     getOperations : (state) => {
-        const ratio = state.chartWidthInPX / (state.endTimestamp - state.startTimestamp);
-        const convertToDisplayable = (data, ratio) => {
-            const displayableData = { ...data};
-            displayableData.startPosition = ratio * (data.startTimestamp - state.startTimestamp);
-            displayableData.width = ratio * data.duration;
-            return displayableData;
-        };
-
         return state.chartData
                 .filter(data => data.startTimestamp >= state.startTimestamp - 100
-                    && data.startTimestamp < state.endTimestamp 
-                )
-                .map(data => convertToDisplayable(data, ratio));
+                    && data.startTimestamp < state.endTimestamp)
+                .map(data => {return {id:data.id, stationId:data.stationId};});
     },
     getOperation :(state) => (id) => {
         const ratio = state.chartWidthInPX / (state.endTimestamp - state.startTimestamp);
@@ -214,12 +205,28 @@ const store = createStore({
     setWidthToOperation(state, data) {
         const operationToMod = state.chartData.filter(cd => cd.id == data.id)[0];
         const ratio = (state.endTimestamp - state.startTimestamp) / state.chartWidthInPX;
+
         const timeOffset = data.offset * ratio;
         operationToMod.duration += Math.floor(timeOffset);
     },
     selectOperation(state, id) {
         state.selectedOperation = id;
-    }
+    },
+    addNewOperation(state, data) {
+        const ratio = (state.endTimestamp - state.startTimestamp) / state.chartWidthInPX;
+        const startTimestamp = Math.floor(data.x * ratio) + state.startTimestamp;
+        
+        const id = state.chartData.length + 1;
+
+        const newOperation = {
+            id: id,
+            name: "new OP #" + id,
+            startTimestamp: startTimestamp,
+            duration: 7200000,
+            stationId: data.station
+        };
+        state.chartData.push(newOperation);
+    } 
     
   }
 })

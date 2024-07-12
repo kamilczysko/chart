@@ -20,10 +20,12 @@
                     <text x="0" :y="sectorToStations.yPos" :dy="this.defaultHeight / 2" :height="this.defaultHeight" dominant-baseline="middle" font-size=".85em"> {{ sectorToStations.sector.name }} </text>
                     <g v-for="(station, index) in sectorToStations.stations">
                         <text  x="70" :y="sectorToStations.yPos + index * this.defaultHeight" :dy="this.defaultHeight / 2" :height="this.defaultHeight" dominant-baseline="middle"  font-size=".85em"> {{ station.name }} </text>
-                        <rect :x="this.labelsWidth" :y="sectorToStations.yPos + index * this.defaultHeight" :height="this.defaultHeight" fill-opacity="0.4" width="100%" fill="white" ></rect>
+                        <rect
+                        @dblclick="addNewOperation(station.id, $event)"
+                        :x="this.labelsWidth" :y="sectorToStations.yPos + index * this.defaultHeight" :height="this.defaultHeight" fill-opacity="0.4" width="100%" fill="white" ></rect>
                         <line :x1="0" :y1="sectorToStations.yPos + index * this.defaultHeight" x2="100%" :y2="sectorToStations.yPos + index * this.defaultHeight" stroke="#c4c4c4"  stroke-width="1"></line>
-                        <g v-for="operation in this.getOperations(station.id)">
-                            <Operation :x="operation.startPosition + this.labelsWidth" :y="sectorToStations.yPos + index * this.defaultHeight" :width="operation.width" :name="operation.name" :id="operation.id"></Operation>
+                        <g v-for="operation in this.operations.filter(op => op.stationId == station.id)">
+                            <Operation :y="sectorToStations.yPos + index * this.defaultHeight" :id="operation.id"></Operation>
                         </g>
                     </g>
                     <line x1="0" :y1="sectorToStations.yPos" x2="100%" :y2="sectorToStations.yPos" stroke="black" stroke-width="1"></line>
@@ -49,14 +51,13 @@ export default {
         }
     },
     methods: {
-        getGlobalIndex() {
-            this.globalIdx ++;
-            return this.globalIdx;
-        },
-        getOperations(stationId) {
-            
-            return this.operations.filter(op => op.stationId == stationId);
-        },
+        // getGlobalIndex() {
+        //     this.globalIdx ++;
+        //     return this.globalIdx;
+        // },
+        // getOperations(stationId) {
+        //     return this.operations.filter(op => op.stationId == stationId);
+        // },
         formatTimestamp(timestamp) {
             const date = new Date(timestamp);
 
@@ -114,6 +115,10 @@ export default {
                 this.mouseX = (event.clientX - rect.left);// - this.labelsWidth;
                 this.timeIndicator = this.formatTime((this.mouseX-this.labelsWidth) * this.ratio + this.startTimestamp);
             }
+        },
+        addNewOperation(station, event) {
+            this.$store.commit("addNewOperation", {station: station, x: event.clientX - this.labelsWidth})
+            this.operations = this.$store.getters.getOperations;
         }
     },
     computed: {
@@ -134,6 +139,9 @@ export default {
         },
         ratio() {
              return this.$store.getters.getTimeToPXRatio;
+        },
+        allOperations() {
+            return this.$store.getters.getOperations;
         }
     },
     watch: {

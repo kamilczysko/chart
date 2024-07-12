@@ -7,19 +7,20 @@
         @mousedown="resizeStart" @mousemove="resize" @mouseup="resizeStop" @mouseleave=resizeStop
         :x="this.posX+this.wdth" :y="this.y" fill="red" :height="this.defaultHeight" :width="4" class="resize"></rect>
         <!-- <text :x="this.x + 10" :y="this.y" font-size=".6em" :dy="this.defaultHeight / 2" :height="this.defaultHeight" dominant-baseline="middle">{{ this.name }}</text> -->
+         <p style="display: none;">{{this.startTimestamp}} {{this.endTimestamp}}</p>
     </g>
 </template>
 <script>
 export default {
     props: {
-        x: Number,
         y: Number,
         name: String,
-        width: Number,
         id: Number
     },
     data(){
         return {
+            // operation: null, 
+
             dragging: false,
             dragStartX: 0,
             
@@ -30,14 +31,13 @@ export default {
             resizing: false,
             posXResize: 0,
             offsetXResize: 0
-
         }
     },
     computed: {
         defaultHeight() {
             return this.$store.getters.getDefaultHeight;
         },
-        operation() {
+        recentOperation() {
             return this.$store.getters.getOperation(this.id)
         },
         labelsWidth() {
@@ -45,11 +45,27 @@ export default {
         },
         selectedOperation() {
             return this.$store.getters.getSelectedOperation;
-        }
+        },
+        startTimestamp() {
+            return this.$store.getters.getStartTimestamp;
+        },
+        endTimestamp() {
+            return this.$store.getters.getEndTimestamp;
+        },
     },
     mounted() {
-        this.posX = this.x;
-        this.wdth = this.width;
+        this.posX = this.recentOperation.startPosition + this.labelsWidth;
+        this.wdth = this.recentOperation.width;
+    },
+    watch: {
+        startTimestamp(oldVal, newVal) {
+            this.posX = this.recentOperation.startPosition + this.labelsWidth;
+            this.wdth = this.recentOperation.width;
+        },
+        endTimestamp(oldVal, newVal) {
+            this.posX = this.recentOperation.startPosition + this.labelsWidth;
+            this.wdth = this.recentOperation.width;
+        }
     },
     methods: {
         resizeStart(event) {
@@ -71,10 +87,10 @@ export default {
         stopResize(event) {
             if(this.resizing){
                 this.resizing = false;
-                const offset = this.wdth - this.operation.width;
+                const offset = this.wdth - this.recentOperation.width;
 
                 this.$store.commit('setWidthToOperation', {id: this.id, offset: offset});
-                this.wdth = this.operation.width;
+                this.wdth = this.recentOperation.width;
                 
                 document.removeEventListener('mousemove', this.move);
                 document.removeEventListener('mouseup', this.drag);
@@ -98,10 +114,10 @@ export default {
         dragStop(event) {
             if(this.dragging){
                 this.dragging = false;
-                const offset = this.posX - this.operation.startPosition-this.labelsWidth;
+                const offset = this.posX - this.recentOperation.startPosition-this.labelsWidth;
 
                 this.$store.commit('addOffsetToOperation', {id: this.id, offset: offset});
-                this.posX = this.operation.startPosition + this.labelsWidth;
+                this.posX = this.recentOperation.startPosition + this.labelsWidth;
                 
                 document.removeEventListener('mousemove', this.move);
                 document.removeEventListener('mouseup', this.drag);
