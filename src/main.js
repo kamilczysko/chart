@@ -198,6 +198,9 @@ const store = createStore({
     },
     getEndTimestamp(state) {
         return state.endTimestamp;
+    },
+    getTimeToPXRatio(state) {
+        return (state.endTimestamp - state.startTimestamp) / state.chartWidthInPX;
     }
 
     
