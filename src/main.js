@@ -124,7 +124,8 @@ const store = createStore({
             nextSectorYPos: 0,
             labelsWidth: 200,
         },
-        selectedOperation: null
+        selectedOperation: null,
+        targetStationId: null,
     }
   },
   getters: {
@@ -226,9 +227,20 @@ const store = createStore({
             stationId: data.station
         };
         state.chartData.push(newOperation);
-    } 
+    },
+    updateOperationsStation(state) {
+        if(state.selectedOperation == null || state.targetStationId == null) {
+            return;
+        }
+        
+        state.chartData.filter(d => d.id == state.selectedOperation)[0].stationId = state.targetStationId;
+        state.targetStationId = null;
+    },
+    updateTargetStationId(state, stationId) {
+        state.targetStationId = stationId;
+    }
     
-  }
+}
 })
 
 const app = createApp(App)
