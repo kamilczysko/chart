@@ -132,81 +132,35 @@ const store = createStore({
         selectedOperation: null,
         targetStation: null,
         graphicsParams: {
-            operationHeight: 20,
+            defaultHeight: 20,
             nextSectorYPos: 0,
-
+            labelsWidth: 200,
         }
     }
   },
   getters: {
-    getSectors:(state) => {
-        return state.sectors;
+    getSectorToStation(state) {
+        let nextYPos = 0;
+        const items = state.sectors.map(sector => {
+            const stations = state.stations.filter(station => station.sectorId == sector.id);
+            const data = {
+                sector: sector,
+                stations: stations,
+                yPos: nextYPos
+            };
+            nextYPos += state.graphicsParams.defaultHeight * stations.length;
+            return data
+        });
+        return items;
     },
-    getStationsForSector:(state) =>  (sectorId) => {
-        return state.stations.filter(station => station.sectorId == sectorId)
+    getDefaultHeight(state) {
+        return state.graphicsParams.defaultHeight;
     },
-    getSectorToStations(state) {
-        let yPos = 0;
-        return state.sectors.map(sector => 
-            {
-                const stations = state.stations.filter(station => station.sectorId == sector.id);
-                const stationData = {
-                    sector: sector,
-                    yPos: yPos,
-                    stations: stations
-                } ;
-                console.log(yPos)
-                yPos += stations.length * state.graphicsParams.operationHeight; //10 - offset
-                return stationData;
-            }
-        )
-    },
-    getOperations : (state) => (station) => {
-        const ratio = state.chartWidthInPX / (state.endTimestamp - state.startTimestamp);
-        const convertToDisplayable = (data, ratio) => {
-            const displayableData = { ...data};
-            displayableData.startPosition = ratio * (data.startTimestamp - state.startTimestamp);
-            displayableData.width = ratio * data.duration;
-            return displayableData;
-        };
-
-        return state.chartData
-                .filter(data => data.stationId == station 
-                    && data.startTimestamp >= state.startTimestamp - 100
-                    && data.startTimestamp < state.endTimestamp 
-                )
-                .map(data => convertToDisplayable(data, ratio));
-    },
-    getOperation: (state) =>  (id) => {
-        const ratio = state.chartWidthInPX / (state.endTimestamp - state.startTimestamp);
-        const convertToDisplayable = (data, ratio) => {
-            const displayableData = { ...data};
-            displayableData.startPosition = ratio * (data.startTimestamp - state.startTimestamp);
-            displayableData.width = ratio * data.duration;
-            return displayableData;
-        };
-
-        const d = state.chartData.filter(data => data.id == id)[0];
-        return convertToDisplayable(d, ratio);
-    },
-    getTimestamps:(state) => {
-        return {
-            start: state.startTimestamp,
-            end: state.endTimestamp
-        }
-    },
-    isSelected:(state) => (id) => {
-        return state.selectedOperation == id;
-    },
-    getPXToTimeRatio(state) {
-        return state.chartWidthInPX / (state.endTimestamp - state.startTimestamp);
-    },
-    getGraphicsParams(state) {
-        return state.graphicsParams;
-    },
-    getNextSectorYPos(state) {
-        return state.getGraphicsParams.nextSectorYPos;
+    getLabelsWidth(state) {
+        return state.graphicsParams.labelsWidth;
     }
+
+    
   },
   mutations: {
     setChartWidth(state, width) {
@@ -218,40 +172,7 @@ const store = createStore({
     setEndTimestamp(state, timestamp) {
         state.endTimestamp = timestamp;
     },
-    selectOperation(state, id) {
-        state.selectedOperation = id;
-    },    
-    moveSelected(state, offset) {
-        const operation = state.chartData.filter(data => data.id == state.selectedOperation)[0]
-        const ratio = (state.endTimestamp - state.startTimestamp) / state.chartWidthInPX;
-        operation.startTimestamp = (offset * ratio) + operation.startTimestamp;
-    },
-    resizeSelected(state, data) {
-        const operation = state.chartData.filter(data => data.id == state.selectedOperation)[0]
-        const ratio = (state.endTimestamp - state.startTimestamp) / state.chartWidthInPX;
-        operation.duration = (data.offset * ratio) + operation.duration;
-        operation.startTimestamp = (data.startPosition * ratio) + state.startTimestamp;
-    },
-    setTargetStation(state, station) {
-        state.targetStation = station;
-    },
-    changeStation(state) {
-        state.chartData.filter(data => data.id == state.selectedOperation)[0].stationId = state.targetStation;        
-    },
-    addNewOperation(state, operation) {
-        const ratio = (state.endTimestamp - state.startTimestamp) / state.chartWidthInPX;
-        const newOperation  = {
-            id: state.chartData.length+1,
-            name: "new op #"+state.chartData.length,
-            startTimestamp: (operation.startPosition * ratio) + state.startTimestamp,
-            duration: 7200000,
-            stationId: operation.stationId
-        };
-        state.chartData.push(newOperation);
-    },
-    deleteOperation(state, id) {
-        state.chartData = state.chartData.filter(data => data.id != id);
-    }
+    
   }
 })
 
