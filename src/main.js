@@ -159,7 +159,7 @@ const store = createStore({
     getLabelsWidth(state) {
         return state.graphicsParams.labelsWidth;
     },
-    getOperations : (state) => (station) => {
+    getOperations : (state) => {
         const ratio = state.chartWidthInPX / (state.endTimestamp - state.startTimestamp);
         const convertToDisplayable = (data, ratio) => {
             const displayableData = { ...data};
@@ -169,8 +169,7 @@ const store = createStore({
         };
 
         return state.chartData
-                .filter(data => data.stationId == station 
-                    && data.startTimestamp >= state.startTimestamp - 100
+                .filter(data => data.startTimestamp >= state.startTimestamp - 100
                     && data.startTimestamp < state.endTimestamp 
                 )
                 .map(data => convertToDisplayable(data, ratio));
@@ -187,6 +186,18 @@ const store = createStore({
         return state.chartData
                 .filter(data => data.id == id)
                 .map(data => convertToDisplayable(data, ratio));
+    },
+    getTimestamps(state) {
+        return {
+            start: state.startTimestamp,
+            end: state.endTimestamp
+        }
+    },
+    getStartTimestamp(state) {
+        return state.startTimestamp;
+    },
+    getEndTimestamp(state) {
+        return state.endTimestamp;
     }
 
     
