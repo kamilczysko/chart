@@ -11,7 +11,11 @@
                     </g>
 
                     <line x1="0" :y1="sectorToStations.yPos - 2" x2="200" :y2="sectorToStations.yPos - 2" stroke="black"></line>
-                    <!-- <rect x="100" y="0" height="20" width="100" fill="red"></rect> -->
+                    
+                    <g v-for="">
+
+                        <rect  x="100" y="0" height="20" width="100" fill="red"></rect>
+                    </g>
                 </g>
             </svg>
         </div>
@@ -32,6 +36,9 @@ export default {
         getGlobalIndex() {
             this.globalIdx ++;
             return this.globalIdx;
+        },
+        getOperations(stationId) {
+            return this.$store.getters.operations(stationId)
         }
     },
     computed: {
