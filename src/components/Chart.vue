@@ -31,7 +31,7 @@
                         <line :x1="0" :y1="sectorToStations.yPos + index * this.defaultHeight" x2="100%" :y2="sectorToStations.yPos + index * this.defaultHeight" stroke="#c4c4c4"  stroke-width="1"></line>
                         <g v-for="operation in this.operations.filter(op => op.stationId == station.id)">
                             <Operation
-                            @dragStart="dragStart(operation.id, $event)"
+                            @mousedown="dragStart(operation.id, $event)"
                             :y="sectorToStations.yPos + index * this.defaultHeight" :id="operation.id"></Operation>
                         </g>
                     </g>
@@ -62,8 +62,10 @@ export default {
     },
     methods: {
         moveToStation(stationId) {
+            // if(!isNaN(stationId)){
+            //     console.log("statoin id"+stationId)
+            // }
             if(this.dragging && !isNaN(stationId)) {
-                // console.log("statoin id"+stationId)
                 this.$store.commit("updateTargetStationId", stationId)
                 this.$store.commit("updateOperationsStation")
                 this.operations = this.$store.getters.getOperations;
@@ -71,6 +73,7 @@ export default {
             }
         },
         dragStart(operationId, event) {
+            console.log("start h drag: "+ operationId)
             this.dragging = true;
             this.operationToMove = operationId;
 
@@ -79,7 +82,6 @@ export default {
         },
         dragStop() {
             this.dragging = false;
-            this.$store.commit("updateOperationsStation")
             this.operations = this.$store.getters.getOperations;
 
             document.removeEventListener('mousemove', this.moveToStation);

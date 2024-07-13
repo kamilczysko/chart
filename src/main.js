@@ -198,6 +198,8 @@ const store = createStore({
         state.endTimestamp = timestamp;
     },
     addOffsetToOperation(state, data) {
+        console.log("offset change for: ")
+        console.log(data)
         const operationToMod = state.chartData.filter(cd => cd.id == data.id)[0];
         const ratio = (state.endTimestamp - state.startTimestamp) / state.chartWidthInPX;
         const timeOffset = data.offset * ratio;
@@ -232,7 +234,7 @@ const store = createStore({
         if(state.selectedOperation == null || state.targetStationId == null) {
             return;
         }
-        
+        console.log("change statio fo: "+state.selectedOperation)
         state.chartData.filter(d => d.id == state.selectedOperation)[0].stationId = state.targetStationId;
         state.targetStationId = null;
     },

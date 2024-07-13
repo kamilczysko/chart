@@ -6,8 +6,6 @@
         <rect 
         @mousedown="resizeStart" @mousemove="resize" @mouseup="resizeStop" @mouseleave=resizeStop
         :x="this.posX+this.width" :y="this.y" fill="red" :height="this.defaultHeight" :width="4" class="resize"></rect>
-        <!-- <text :x="this.x + 10" :y="this.y" font-size=".6em" :dy="this.defaultHeight / 2" :height="this.defaultHeight" dominant-baseline="middle">{{ this.name }}</text> -->
-         <p style="display: none;">{{this.startTimestamp}} {{this.endTimestamp}}</p>
     </g>
 </template>
 <script>
@@ -61,8 +59,11 @@ export default {
         startTimestamp(oldVal, newVal) {
             this.posX = this.recentOperation.startPosition + this.labelsWidth;
             this.width = this.recentOperation.width;
+            console.log("op: "+this.id+" change pos")
         },
         endTimestamp(oldVal, newVal) {
+
+            console.log("op: "+this.id+" change pos")
             this.posX = this.recentOperation.startPosition + this.labelsWidth;
             this.width = this.recentOperation.width;
         }
@@ -104,15 +105,11 @@ export default {
             document.addEventListener('mouseup', this.stopDrag);
 
             this.$store.commit("selectOperation", this.id);
-
-            this.$emit("dragStart")
-            
         },
         move(event) {
             if (this.dragging) {
                 this.posX = event.clientX - this.offsetX;
             }
-            this.$emit("move")
         },
         dragStop(event) {
             if(this.dragging){
@@ -124,7 +121,6 @@ export default {
                 
                 document.removeEventListener('mousemove', this.move);
                 document.removeEventListener('mouseup', this.drag);
-                this.$emit("endDrag")
             }
         }
     }
