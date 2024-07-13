@@ -11,26 +11,26 @@ const store = createStore({
     return {
         chartData: [
             // {
-            //     id: 1,
+            //     id: 4,
             //     name: "drill",
             //     startTimestamp: 1720537860000,
             //     duration: 7200000,
             //     stationId: 1
             // },{
-            //     id: 2,
+            //     id: 3,
             //     name: "weld",
             //     startTimestamp: 1720486000000,
             //     duration: 3600000,
             //     stationId: 2
             // },
             {
-                id: 3,
+                id: 1,
                 name: "drill",
                 startTimestamp: 1720537860000,
                 duration: 7200000,
                 stationId: 1
             },{
-                id: 4,
+                id: 2,
                 name: "weld",
                 startTimestamp: 1720476000000,
                 duration: 3600000,
