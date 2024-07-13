@@ -10,25 +10,25 @@ const store = createStore({
   state () {
     return {
         chartData: [
-            // {
-            //     id: 4,
-            //     name: "drill",
-            //     startTimestamp: 1720537860000,
-            //     duration: 7200000,
-            //     stationId: 1
-            // },{
-            //     id: 3,
-            //     name: "weld",
-            //     startTimestamp: 1720486000000,
-            //     duration: 3600000,
-            //     stationId: 2
-            // },
+            {
+                id: 4,
+                name: "drill",
+                startTimestamp: 1720537860000,
+                duration: 7200000,
+                stationId: 1
+            },{
+                id: 3,
+                name: "weld",
+                startTimestamp: 1720486000000,
+                duration: 3600000,
+                stationId: 2
+            },
             {
                 id: 1,
                 name: "drill",
                 startTimestamp: 1720537860000,
                 duration: 7200000,
-                stationId: 1
+                stationId: 3
             },{
                 id: 2,
                 name: "weld",
@@ -239,6 +239,9 @@ const store = createStore({
     },
     updateTargetStationId(state, stationId) {
         state.targetStationId = stationId;
+    },
+    remove(state, id) {
+        state.chartData = state.chartData.filter(d => d.id != id);
     }
     
 }

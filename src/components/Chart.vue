@@ -20,9 +20,9 @@
                 </g>
                 
                 <g v-for="(sectorToStations, idx) in this.sectorsToStations"  transform="translate(0,70)">
-                    <text x="0" :y="sectorToStations.yPos" :dy="this.defaultHeight / 2" :height="this.defaultHeight" dominant-baseline="middle" font-size=".85em"> {{ sectorToStations.sector.name }} </text>
+                    <text x="0" :y="sectorToStations.yPos" :dy="this.defaultHeight / 2" :height="this.defaultHeight" dominant-baseline="middle" font-size=".85em" style="user-select: none;"> {{ sectorToStations.sector.name }} </text>
                     <g v-for="(station, index) in sectorToStations.stations">
-                        <text  x="70" :y="sectorToStations.yPos + index * this.defaultHeight" :dy="this.defaultHeight / 2" :height="this.defaultHeight" dominant-baseline="middle"  font-size=".85em"> {{ station.name }} </text>
+                        <text  x="70" :y="sectorToStations.yPos + index * this.defaultHeight" :dy="this.defaultHeight / 2" :height="this.defaultHeight" dominant-baseline="middle"  font-size=".85em" style="user-select: none;"> {{ station.name }} </text>
                         <rect
                         @mouseover="this.moveToStation(station.id)"
                         @mouseup="this.dragStop()"

@@ -3,10 +3,15 @@
         <rect class="operation"
         @mousedown="dragStart" @mousemove="move" @mouseup="dragStop" @mouseleave=dragStop
         :class="{selected: this.selectedOperation==this.id}" :x="this.posX" :y="this.y" :height="this.defaultHeight" :width="this.width" rx="5" ry="5"></rect>
+        
+        <text 
+        @mousedown="dragStart" @mousemove="move" @mouseup="dragStop" @mouseleave=dragStop
+        :x="this.posX+10" :y="this.y" :dy="this.defaultHeight / 2" font-size=".55em" 
+        :height="this.defaultHeight" :width="this.width*.5" dominant-baseline="middle"> {{ this.recentOperation.name }}</text>
+
         <rect 
         @mousedown="resizeStart" @mousemove="resize" @mouseup="resizeStop"
         :x="this.posX+this.width - 7" :y="this.y" fill="red" :height="this.defaultHeight" :width="7" class="resize"></rect>
-        <!-- <text :x="this.posX" :y="this.y"> {{ this.id }}</text> -->
     </g>
 </template>
 <script>
@@ -29,7 +34,7 @@ export default {
 
             resizing: false,
             posXResize: 0,
-            offsetXResize: 0
+            offsetXResize: 0,
         }
     },
     computed: {
@@ -128,10 +133,13 @@ export default {
 <style scoped>
     .operation {
         cursor: grab;
-        
+        fill:rgb(114, 210, 105);
     }
     .operation:hover {
-        fill: green;
+        stroke: #000000;
+        stroke-width: 2px;
+        /* stroke-dasharray: 2,2; */
+        stroke-linejoin: round;
     }
     .selected {
         fill: pink !important;
@@ -141,5 +149,13 @@ export default {
     }
     .resize:hover {
         fill: green;
+    }
+    .remove {
+        font-size: .5em;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    .remove:hover {
+        font-weight: bolder;
     }
 </style>
