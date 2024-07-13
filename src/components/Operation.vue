@@ -4,9 +4,9 @@
         @mousedown="dragStart" @mousemove="move" @mouseup="dragStop" @mouseleave=dragStop
         :class="{selected: this.selectedOperation==this.id}" :x="this.posX" :y="this.y" :height="this.defaultHeight" :width="this.width" rx="5" ry="5"></rect>
         <rect 
-        @mousedown="resizeStart" @mousemove="resize" @mouseup="resizeStop" @mouseleave=resizeStop
-        :x="this.posX+this.width" :y="this.y" fill="red" :height="this.defaultHeight" :width="4" class="resize"></rect>
-        <text :x="this.posX" :y="this.y"> {{ this.id }}</text>
+        @mousedown="resizeStart" @mousemove="resize" @mouseup="resizeStop"
+        :x="this.posX+this.width - 7" :y="this.y" fill="red" :height="this.defaultHeight" :width="7" class="resize"></rect>
+        <!-- <text :x="this.posX" :y="this.y"> {{ this.id }}</text> -->
     </g>
 </template>
 <script>
