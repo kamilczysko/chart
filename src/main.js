@@ -10,30 +10,31 @@ const store = createStore({
   state () {
     return {
         chartData: [
+            // {
+            //     id: 1,
+            //     name: "drill",
+            //     startTimestamp: 1720537860000,
+            //     duration: 7200000,
+            //     stationId: 1
+            // },{
+            //     id: 2,
+            //     name: "weld",
+            //     startTimestamp: 1720486000000,
+            //     duration: 3600000,
+            //     stationId: 2
+            // },
             {
-                id: 1,
+                id: 3,
                 name: "drill",
                 startTimestamp: 1720537860000,
                 duration: 7200000,
                 stationId: 1
             },{
-                id: 2,
-                name: "weld",
-                startTimestamp: 1720486000000,
-                duration: 3600000,
-                stationId: 2
-            },{
-                id: 3,
-                name: "drill",
-                startTimestamp: 1720537860000,
-                duration: 7200000,
-                stationId: 4
-            },{
                 id: 4,
                 name: "weld",
                 startTimestamp: 1720476000000,
                 duration: 3600000,
-                stationId: 4
+                stationId: 1
             }
         ],
         sectors: [
@@ -198,8 +199,6 @@ const store = createStore({
         state.endTimestamp = timestamp;
     },
     addOffsetToOperation(state, data) {
-        console.log("offset change for: ")
-        console.log(data)
         const operationToMod = state.chartData.filter(cd => cd.id == data.id)[0];
         const ratio = (state.endTimestamp - state.startTimestamp) / state.chartWidthInPX;
         const timeOffset = data.offset * ratio;
@@ -234,7 +233,7 @@ const store = createStore({
         if(state.selectedOperation == null || state.targetStationId == null) {
             return;
         }
-        console.log("change statio fo: "+state.selectedOperation)
+        
         state.chartData.filter(d => d.id == state.selectedOperation)[0].stationId = state.targetStationId;
         state.targetStationId = null;
     },

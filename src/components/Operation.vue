@@ -6,6 +6,7 @@
         <rect 
         @mousedown="resizeStart" @mousemove="resize" @mouseup="resizeStop" @mouseleave=resizeStop
         :x="this.posX+this.width" :y="this.y" fill="red" :height="this.defaultHeight" :width="4" class="resize"></rect>
+        <text :x="this.posX" :y="this.y"> {{ this.id }}</text>
     </g>
 </template>
 <script>
@@ -59,11 +60,8 @@ export default {
         startTimestamp(oldVal, newVal) {
             this.posX = this.recentOperation.startPosition + this.labelsWidth;
             this.width = this.recentOperation.width;
-            console.log("op: "+this.id+" change pos")
         },
         endTimestamp(oldVal, newVal) {
-
-            console.log("op: "+this.id+" change pos")
             this.posX = this.recentOperation.startPosition + this.labelsWidth;
             this.width = this.recentOperation.width;
         }
@@ -114,7 +112,7 @@ export default {
         dragStop(event) {
             if(this.dragging){
                 this.dragging = false;
-                const offset = this.posX - this.recentOperation.startPosition-this.labelsWidth;
+                const offset = Math.round(this.posX - this.recentOperation.startPosition-this.labelsWidth);
 
                 this.$store.commit('addOffsetToOperation', {id: this.id, offset: offset});
                 this.posX = this.recentOperation.startPosition + this.labelsWidth;

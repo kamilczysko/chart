@@ -29,11 +29,12 @@
                         @dblclick="addNewOperation(station.id, $event)"
                         :x="this.labelsWidth" :y="sectorToStations.yPos + index * this.defaultHeight" :height="this.defaultHeight" fill-opacity="0.4" width="100%" fill="white" ></rect>
                         <line :x1="0" :y1="sectorToStations.yPos + index * this.defaultHeight" x2="100%" :y2="sectorToStations.yPos + index * this.defaultHeight" stroke="#c4c4c4"  stroke-width="1"></line>
-                        <g v-for="operation in this.operations.filter(op => op.stationId == station.id)">
-                            <Operation
-                            @mousedown="dragStart(operation.id, $event)"
-                            :y="sectorToStations.yPos + index * this.defaultHeight" :id="operation.id"></Operation>
-                        </g>
+                        
+                        <Operation
+                        v-for="operation in this.operations.filter(op => op.stationId == station.id)"
+                        @mousedown="dragStart(operation.id, $event)"
+                        :y="sectorToStations.yPos + index * this.defaultHeight" :id="operation.id"></Operation>                       
+
                     </g>
                     <line x1="0" :y1="sectorToStations.yPos" x2="100%" :y2="sectorToStations.yPos" stroke="black" stroke-width="1"></line>
                 </g>
@@ -62,18 +63,16 @@ export default {
     },
     methods: {
         moveToStation(stationId) {
-            // if(!isNaN(stationId)){
-            //     console.log("statoin id"+stationId)
-            // }
             if(this.dragging && !isNaN(stationId)) {
                 this.$store.commit("updateTargetStationId", stationId)
                 this.$store.commit("updateOperationsStation")
-                this.operations = this.$store.getters.getOperations;
-
+                this.operations = []
+                this.$nextTick(() => {
+                    this.operations = this.$store.getters.getOperations;
+                });
             }
         },
         dragStart(operationId, event) {
-            console.log("start h drag: "+ operationId)
             this.dragging = true;
             this.operationToMove = operationId;
 
@@ -82,10 +81,14 @@ export default {
         },
         dragStop() {
             this.dragging = false;
-            this.operations = this.$store.getters.getOperations;
-
+            
             document.removeEventListener('mousemove', this.moveToStation);
             document.removeEventListener('mouseup', this.dragStop);
+
+            this.$nextTick(() => {
+                this.operations = this.$store.getters.getOperations;
+                // this.operations = this.$store.getters.getOperations;
+            });
 
         },
         formatTimestamp(timestamp) {
