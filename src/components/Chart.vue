@@ -33,7 +33,9 @@
                         <Operation
                         v-for="operation in this.operations.filter(op => op.stationId == station.id)"
                         @mousedown="dragStart(operation.id, $event)"
-                        :y="sectorToStations.yPos + index * this.defaultHeight" :id="operation.id"></Operation>                       
+                        :y="sectorToStations.yPos + index * this.defaultHeight" :id="operation.id"
+                        @resizingStart="resizingStart"
+                        @resizingEnd="resizingEnd"></Operation>                       
 
                     </g>
                     <line x1="0" :y1="sectorToStations.yPos" x2="100%" :y2="sectorToStations.yPos" stroke="black" stroke-width="1"></line>
@@ -58,10 +60,17 @@ export default {
             timeIndicator: "",
 
             dragging: false,
-            operationToMove: null
+            operationToMove: null,
+            resizingOperationId: null
         }
     },
     methods: {
+        resizingStart(id) {
+            this.resizingOperationId = id;
+        },
+        resizingEnd(id) {
+            this.resizingOperationId = null;
+        },
         moveToStation(stationId) {
             if(this.dragging && !isNaN(stationId)) {
                 this.$store.commit("updateTargetStationId", stationId)
@@ -73,6 +82,7 @@ export default {
             }
         },
         dragStart(operationId, event) {
+            if(this.resizingOperationId == operationId) {return;}
             this.dragging = true;
             this.operationToMove = operationId;
 

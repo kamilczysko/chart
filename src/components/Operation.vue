@@ -80,6 +80,7 @@ export default {
             document.addEventListener('mouseup', this.stopResize);
 
             this.$store.commit("selectOperation", this.id);
+            this.$emit("resizingStart", this.id)
         },
         resize(event) {
             if(this.resizing){
@@ -98,9 +99,11 @@ export default {
                 
                 document.removeEventListener('mousemove', this.move);
                 document.removeEventListener('mouseup', this.drag);
+                this.$emit("resizingEnd", this.id)
             }
         },
         dragStart(event) {
+            if(this.resizing) {return;}
             this.dragging = true;
             this.offsetX = event.clientX - this.posX;
             
